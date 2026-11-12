@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>TuProfe20 Lab | Ejercicio 3 - Inecuaciones</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap');
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden}
+body{font-family:Nunito,system-ui,sans-serif;background:linear-gradient(135deg,#0f172a,#312e81 48%,#831843);color:#0f172a;user-select:none}
+button{font-family:inherit}
+.app{height:100dvh;position:relative;overflow:hidden}
+.floaters{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.floaters span{position:absolute;width:17px;height:17px;border-radius:50%;background:#ffffff20;animation:floatUp linear infinite}
+@keyframes floatUp{from{transform:translateY(110vh);opacity:0}15%{opacity:1}to{transform:translateY(-15vh) rotate(360deg);opacity:0}}
+.lab{position:absolute;inset:0;padding:13px;display:flex;flex-direction:column}
+.labTop{width:min(98%,1450px);margin:0 auto 9px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.brandpill{padding:10px 16px;border-radius:18px;border:2px solid #facc1570;background:#ffffff18;color:#fde047;font-weight:900;box-shadow:0 10px 24px #0003}
+.stage{color:white;background:#ffffff20;border:1px solid #ffffff40;border-radius:12px;padding:9px 15px;font-weight:900}
+.miniBtn{border:2px solid #ffffff45;background:#ffffff20;color:white;padding:9px 13px;border-radius:14px;font-weight:900;cursor:pointer}
+.board{width:min(98%,1450px);margin:auto;flex:1;min-height:0;background:#fff;border:6px solid #f8fafc;border-radius:30px;box-shadow:0 30px 60px #0007;overflow:hidden;display:flex;flex-direction:column}
+.boardHead{background:#0f172a;color:white;border-bottom:4px solid #06b6d4;padding:12px 20px}
+.boardMeta{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:7px}
+.topBadge{padding:6px 10px;border-radius:10px;font-size:12px;font-weight:900;letter-spacing:.07em}
+.blockTag{background:#06b6d4;color:#082f49}.typeTag{background:#ffffff20;color:#fde68a}
+.enunciado{text-align:center;font-size:clamp(18px,2vw,27px);font-weight:800}
+#equation{font-size:clamp(34px,4vw,48px);color:#fde047;margin-top:5px}
+.boardBody{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;background:#f8fafc}
+.half{min-width:0;min-height:0;display:flex;flex-direction:column}
+.half.left{border-right:2px solid #cbd5e180}
+.panelTitle{padding:12px 17px;border-bottom:2px solid #cbd5e1;background:linear-gradient(90deg,#fff,#f1f5f9);font-size:clamp(17px,1.6vw,22px);font-weight:900;display:flex;justify-content:space-between;gap:8px}
+.panelTitle small{font-size:12px;color:#475569;align-self:center}
+.stepsArea{flex:1;min-height:0;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:12px;background-image:radial-gradient(#0f172a0a 1.5px,transparent 1.5px);background-size:22px 22px}
+.step{background:white;border:2px solid #e2e8f0;border-radius:19px;padding:13px 16px;box-shadow:0 8px 18px #0f172a10;animation:slideIn .3s ease-out}
+.step.current{border-color:#8b5cf6;background:#faf5ff}
+@keyframes slideIn{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:none}}
+.stepWhy{display:flex;align-items:center;gap:9px;margin-bottom:7px;color:#475569;font-size:14px;font-weight:800}
+.stepWhy b{width:27px;height:27px;display:grid;place-items:center;border-radius:50%;background:#2563eb;color:white;flex:none}
+.mathLine{font-size:clamp(22px,2vw,32px);text-align:center;color:#0f172a;padding:5px;overflow-x:auto}
+.emptyBox{flex:1;display:grid;place-items:center;text-align:center;color:#64748b;padding:20px}
+.emptyBox strong{font-size:clamp(22px,2vw,30px);color:#334155}
+.notice{background:#f0fdf4;border:2px solid #86efac;color:#166534;border-radius:14px;padding:12px;font-weight:900;text-align:center}
+.graphWrap{flex:1;min-height:0;padding:13px 17px;display:flex;flex-direction:column}
+.graphTitle{text-align:center;color:#4338ca;font-weight:900;margin-bottom:8px}
+.graphBox{flex:1;min-height:190px;display:flex;align-items:center;justify-content:center;background:linear-gradient(#fff,#f8fafc);border:2px solid #e2e8f0;border-radius:22px;padding:8px;overflow:hidden}
+.graphBox svg{width:100%;height:100%;max-height:400px}
+.graphHint{text-align:center;color:#475569;font-size:13px;font-weight:800;margin:8px 0}
+.graphTip{padding:10px 12px;border-radius:14px;border:2px solid #bfdbfe;background:#eff6ff;color:#1d4ed8;font-size:14px;font-weight:800}
+.controls{padding:10px 13px;border-top:2px solid #cbd5e1;background:#fff;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.group{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.ctrl{border:0;border-radius:13px;padding:10px 13px;font-size:14px;font-weight:900;cursor:pointer;box-shadow:0 4px 0 #0f172a20;transition:.15s}
+.ctrl:active{transform:translateY(2px);box-shadow:none}
+.ctrl.main{background:#2563eb;color:white}.ctrl.alt{background:white;color:#334155;border:2px solid #cbd5e1}.ctrl.gold{background:#facc15;color:#713f12}
+.ctrl:disabled{opacity:.4;cursor:not-allowed}
+.progressShell{width:150px;height:12px;background:#dbeafe;border-radius:99px;overflow:hidden}
+.progressBar{height:100%;width:0;background:linear-gradient(90deg,#22d3ee,#2563eb);transition:width .25s}
+.toolbar{position:fixed;right:14px;bottom:75px;z-index:5;display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;max-width:min(650px,85vw);padding:7px;border-radius:16px;background:#fffffff2;border:2px solid #cbd5e1;box-shadow:0 10px 24px #0f172a30}
+.tbtn{border:2px solid #cbd5e1;border-radius:10px;padding:7px 9px;background:white;color:#334155;font-weight:900;cursor:pointer}
+.tbtn.active{background:#2563eb;color:white;border-color:#1d4ed8}
+.swatch{width:24px;height:24px;border-radius:50%;border:2px solid white;outline:1px solid #94a3b8;cursor:pointer}
+.swatch.sel{outline:3px solid #1e3a8a}
+#ink{position:fixed;inset:0;z-index:4;pointer-events:none;touch-action:none}
+.drawactive #ink{pointer-events:auto;cursor:crosshair}
+@media(max-width:850px){
+ .lab{padding:7px}.board{border-width:4px;border-radius:20px}
+ .boardBody{grid-template-columns:1fr;overflow:auto}
+ .half.left{min-height:230px;border-right:0;border-bottom:2px solid #cbd5e1}
+ .half.right{min-height:270px}.stepsArea{max-height:34vh}
+ .toolbar{left:7px;right:7px;bottom:5px;justify-content:center}
+ .controls{padding-bottom:65px}.stage{display:none}
+}
+@media(max-width:480px){.brandpill{font-size:12px;padding:8px}.miniBtn{font-size:12px;padding:8px}.ctrl{font-size:12px;padding:9px}.progressShell{width:90px}}
+</style>
+</head>
+<body>
+<canvas id="ink"></canvas>
+<div class="app">
+ <div class="floaters" id="floaters"></div>
+ <section class="lab">
+  <div class="labTop">
+   <span class="brandpill">🚀 TuProfe20 Lab · Aula 23</span>
+   <span class="stage">EJERCICIO 3 · INECUACIONES</span>
+   <button class="miniBtn" id="toggleMute">🔊 Sonido</button>
+  </div>
+  <div class="board">
+   <div class="boardHead">
+    <div class="boardMeta"><span class="topBadge blockTag">BLOQUE 03 · DESIGUALDADES</span><span class="topBadge typeTag">DESARROLLA Y REPRESENTA</span></div>
+    <div class="enunciado">Resuelve la inecuación. Presta atención al sentido del signo al despejar.</div>
+    <div id="equation">7 − 2x &lt; 13</div>
+   </div>
+   <div class="boardBody">
+    <div class="half left">
+     <div class="panelTitle">✍️ Resolución paso a paso <small id="stepMeta">0 de 4 pasos</small></div>
+     <div class="stepsArea" id="stepsArea"></div>
+    </div>
+    <div class="half right">
+     <div class="panelTitle">📏 Recta numérica <small>Conjunto solución</small></div>
+     <div class="graphWrap">
+      <div class="graphTitle" id="graphTitle">Avanza para descubrir dónde comienza la solución.</div>
+      <div class="graphBox" id="graphBox"></div>
+      <div class="graphHint">○ Punto abierto = extremo no incluido · → Valores mayores</div>
+      <div class="graphTip" id="graphTip">Primero despejaremos la variable; después representaremos la solución.</div>
+     </div>
+    </div>
+   </div>
+   <div class="controls">
+    <div class="group">
+     <button class="ctrl alt" id="prevStep">↶ Paso anterior</button>
+     <button class="ctrl main" id="nextStep">Siguiente paso ▶</button>
+     <button class="ctrl gold" id="solveAll">Resolver todo ★</button>
+     <button class="ctrl alt" id="restart">↻ Reiniciar</button>
+    </div>
+    <div class="group"><div class="progressShell"><div class="progressBar" id="progressBar"></div></div><strong id="progressTxt">0 / 4</strong></div>
+   </div>
+  </div>
+ </section>
+</div>
+<nav class="toolbar" aria-label="Herramientas de pizarra">
+ <button class="tbtn active" data-tool="select">☝ Selector</button>
+ <button class="tbtn" data-tool="pen">✏ Lápiz</button>
+ <button class="tbtn" data-tool="marker">🖍 Resaltador</button>
+ <button class="tbtn" data-tool="line">📐 Línea</button>
+ <button class="tbtn" data-tool="erase">◻ Borrador</button>
+ <button class="swatch sel" data-color="#ef4444" style="background:#ef4444" title="Rojo"></button>
+ <button class="swatch" data-color="#2563eb" style="background:#2563eb" title="Azul"></button>
+ <button class="swatch" data-color="#16a34a" style="background:#16a34a" title="Verde"></button>
+ <button class="swatch" data-color="#facc15" style="background:#facc15" title="Amarillo"></button>
+ <button class="tbtn" id="undoInk">↩</button><button class="tbtn" id="clearInk">🗑</button>
+</nav>
+<script>
+const $=id=>document.getElementById(id);
+let revealed=0;
+const STEPS=[
+ {why:'Restamos 7 en ambos miembros para dejar el término con x solo.',math:'7-2x<13\\quad\\Rightarrow\\quad -2x<13-7\\;\\;\\Rightarrow\\;\\;-2x<6'},
+ {why:'Dividimos ambos miembros entre −2. ¡Atención! Al dividir entre un número negativo, el signo de la desigualdad se invierte.',math:'\\frac{-2x}{-2}>\\frac{6}{-2}'},
+ {why:'Simplificamos las divisiones y obtenemos el valor que debe cumplir x.',math:'x>-3'},
+ {why:'Como −3 no está incluido, usamos un círculo abierto y sombreado hacia la derecha.',math:'\\boxed{CS=(-3,+\\infty)}'}
+];
+function createFloaters(){for(let i=0;i<16;i++){const s=document.createElement('span');s.style.left=Math.random()*100+'%';s.style.animationDuration=(11+Math.random()*17)+'s';s.style.animationDelay=-Math.random()*20+'s';$('floaters').appendChild(s)}}
+function graph(){
+ const y=205, x=v=>525+v*78, marks=[-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5];
+ let svg=`<svg viewBox="0 0 1050 390" role="img" aria-label="Recta numérica con solución mayor que menos tres">
+ <defs><linearGradient id="ray" x1="0" x2="1"><stop offset="0" stop-color="#facc15"/><stop offset="1" stop-color="#fde047"/></linearGradient></defs>
+ <text x="525" y="65" font-size="26" text-anchor="middle" font-weight="900" fill="#4338ca">${revealed<3?'Busquemos el punto crítico':revealed===3?'Valor crítico: −3':'CONJUNTO SOLUCIÓN'}</text>
+ <line x1="65" y1="${y}" x2="985" y2="${y}" stroke="#64748b" stroke-width="5" stroke-linecap="round"/>
+ <path d="M 50 ${y} l 22 -13 v 26 Z M 1000 ${y} l -22 -13 v 26 Z" fill="#64748b"/>`;
+ for(const m of marks){let z=x(m);svg+=`<line x1="${z}" y1="${y-13}" x2="${z}" y2="${y+13}" stroke="#334155" stroke-width="2.5"/><text x="${z}" y="${y+48}" text-anchor="middle" font-size="23" font-weight="800" fill="${m===-3?'#7c3aed':'#334155'}">${m}</text>`}
+ if(revealed>=3){
+  const z=x(-3);
+  svg+=`<line x1="${z}" x2="${z}" y1="95" y2="300" stroke="#f97316" stroke-width="3" stroke-dasharray="8 7"/>`;
+  if(revealed===3){svg+=`<circle cx="${z}" cy="${y}" r="15" fill="white" stroke="#7c3aed" stroke-width="5"/><text x="${z}" y="112" text-anchor="middle" font-size="25" font-weight="900" fill="#7c3aed">−3</text>`}
+  else{svg+=`<path d="M ${z+14} ${y-17} H 975 V ${y+17} H ${z+14} Z" fill="url(#ray)" stroke="#ca8a04" stroke-width="2"/><path d="M 988 ${y} l -24 -17 v 34 Z" fill="#facc15"/><circle cx="${z}" cy="${y}" r="16" fill="white" stroke="#7c3aed" stroke-width="5"/><text x="${z+130}" y="${y-52}" font-size="29" font-weight="900" fill="#92400e">x &gt; −3</text><text x="${z+150}" y="${y+93}" font-size="23" font-weight="900" fill="#166534">−3 no está incluido ✓</text>`}
+ }
+ return svg+'</svg>';
+}
+function render(){
+ const area=$('stepsArea');area.innerHTML='';
+ if(!revealed){area.innerHTML='<div class="emptyBox"><div><strong>¿Cómo empezamos?</strong><p>Presiona <b>Siguiente paso</b> para eliminar el 7.</p><p>Observa con atención qué sucede al dividir entre un número negativo.</p></div></div>'}
+ else{
+  STEPS.slice(0,revealed).forEach((s,i)=>{const d=document.createElement('div');d.className='step'+(i===revealed-1?' current':'');d.innerHTML=`<div class="stepWhy"><b>${i+1}</b><span>${s.why}</span></div><div class="mathLine"></div>`;area.appendChild(d);d.querySelector('.mathLine').textContent=s.math});
+  if(revealed===4){const d=document.createElement('div');d.className='notice';d.textContent='✓ ¡Muy bien! La solución son todos los números mayores que −3, sin incluir al −3.';area.appendChild(d)}
+  area.scrollTop=area.scrollHeight;
+ }
+ $('graphBox').innerHTML=graph();
+ $('stepMeta').textContent=`${revealed} de 4 pasos`;$('progressTxt').textContent=`${revealed} / 4`;$('progressBar').style.width=(revealed*25)+'%';
+ $('nextStep').disabled=revealed===4;$('prevStep').disabled=revealed===0;
+ $('graphTitle').textContent=revealed===4?'La zona amarilla muestra todos los valores que cumplen la inecuación.':revealed===3?'Marcamos −3 con un círculo abierto. Ahora indicamos hacia dónde van las soluciones.':'La recta se completará cuando despejemos x.';
+ $('graphTip').textContent=revealed===4?'El círculo está abierto porque −3 no pertenece a la solución (>). La flecha apunta hacia +∞.':revealed===3?'x > −3: necesitamos todos los números mayores que −3, hacia la derecha.':'Todavía no marcamos la solución. Sigue los pasos para descubrir el extremo.';
+}
+$('nextStep').onclick=()=>{revealed=Math.min(4,revealed+1);render();playSound('step')};
+$('prevStep').onclick=()=>{revealed=Math.max(0,revealed-1);render();playSound('click')};
+$('solveAll').onclick=()=>{revealed=4;render();playSound('success')};
+$('restart').onclick=()=>{revealed=0;render();playSound('click')};
+let soundEnabled=true,audioContext=null;
+function playSound(kind='click'){if(!soundEnabled)return;try{const A=window.AudioContext||window.webkitAudioContext;if(!A)return;if(!audioContext)audioContext=new A();if(audioContext.state==='suspended')audioContext.resume();const now=audioContext.currentTime;const notes=kind==='success'?[660,830,1046]:kind==='step'?[520,710]:[440,600];notes.forEach((f,i)=>{const o=audioContext.createOscillator(),g=audioContext.createGain();let t=now+i*.06;o.type='sine';o.frequency.setValueAtTime(f,t);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.06,t+.015);g.gain.exponentialRampToValueAtTime(.0001,t+.13);o.connect(g);g.connect(audioContext.destination);o.start(t);o.stop(t+.14)})}catch(e){}}
+$('toggleMute').onclick=()=>{soundEnabled=!soundEnabled;$('toggleMute').textContent=soundEnabled?'🔊 Sonido':'🔇 Silencio';if(soundEnabled)playSound('success')};
+document.addEventListener('click',e=>{if(e.target.closest('button')&&!e.target.closest('#toggleMute'))playSound('click')},true);
+const ink=$('ink'),ctx=ink.getContext('2d');let tool='select',color='#ef4444',down=false,last=null,origin=null,snapshot=null,undo=[];
+function resize(){const old=document.createElement('canvas');old.width=ink.width;old.height=ink.height;if(old.width&&old.height)old.getContext('2d').drawImage(ink,0,0);ink.width=innerWidth*devicePixelRatio;ink.height=innerHeight*devicePixelRatio;ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);if(old.width&&old.height)ctx.drawImage(old,0,0,old.width/devicePixelRatio,old.height/devicePixelRatio)}
+addEventListener('resize',resize);resize();
+function save(){undo.push(ctx.getImageData(0,0,ink.width,ink.height));if(undo.length>15)undo.shift()}
+function setTool(t){tool=t;document.body.classList.toggle('drawactive',t!=='select');document.querySelectorAll('[data-tool]').forEach(b=>b.classList.toggle('active',b.dataset.tool===t))}
+document.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>setTool(b.dataset.tool));
+document.querySelectorAll('[data-color]').forEach(b=>b.onclick=()=>{color=b.dataset.color;document.querySelectorAll('[data-color]').forEach(x=>x.classList.toggle('sel',x===b))});
+$('clearInk').onclick=()=>{save();ctx.clearRect(0,0,innerWidth,innerHeight)};
+$('undoInk').onclick=()=>{if(undo.length)ctx.putImageData(undo.pop(),0,0)};
+function point(e){return{x:e.clientX,y:e.clientY}}
+function stroke(a,b){ctx.lineCap='round';ctx.lineJoin='round';ctx.lineWidth=tool==='erase'?32:tool==='marker'?20:4.5;ctx.globalAlpha=tool==='marker'?.3:1;ctx.globalCompositeOperation=tool==='erase'?'destination-out':'source-over';ctx.strokeStyle=color;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over'}
+ink.addEventListener('pointerdown',e=>{if(tool==='select'||(e.pointerType==='mouse'&&e.button!==0))return;e.preventDefault();save();down=true;origin=last=point(e);snapshot=(tool==='line')?ctx.getImageData(0,0,ink.width,ink.height):null;ink.setPointerCapture(e.pointerId)});
+ink.addEventListener('pointermove',e=>{if(!down)return;e.preventDefault();let p=point(e);if(tool==='line'&&snapshot){ctx.putImageData(snapshot,0,0);stroke(origin,p)}else{stroke(last,p);last=p}});
+function stop(e){if(!down)return;if(tool==='line'&&snapshot){ctx.putImageData(snapshot,0,0);stroke(origin,point(e))}down=false;snapshot=null;if(ink.hasPointerCapture(e.pointerId))ink.releasePointerCapture(e.pointerId)}
+ink.addEventListener('pointerup',stop);ink.addEventListener('pointercancel',stop);
+addEventListener('keydown',e=>{if(e.key==='Escape')setTool('select');if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){$('undoInk').click()}if(tool==='select'&&e.key==='ArrowRight')$('nextStep').click();if(tool==='select'&&e.key==='ArrowLeft')$('prevStep').click()});
+createFloaters();setTool('select');render();
+</script>
+</body></html>
